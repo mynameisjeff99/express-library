@@ -1,8 +1,10 @@
 const Author = require('../models/author');
 const Book = require('../models/book');
 
+const mongoose = require('mongoose');
 const async = require('async');
 const {body, validationResult} = require('express-validator');
+const genre = require('../models/genre');
 
 // Display list of all Authors.
 exports.author_list = function(req, res, next) {
@@ -45,14 +47,64 @@ exports.author_detail = (req, res, next) => {
 }
 
 // Display Author create form on GET.
-exports.author_create_get = (req, res) => {
-    res.send('NOT IMPLEMENTED: Author create GET');
-}
+exports.author_create_get = (req, res, next) => {
+    res.render('author_form', {title: 'Create Author'});
+};
   
 // Handle Author create on POST.
-exports.author_create_post = (req, res) => {
-    res.send('NOT IMPLEMENTED: Author create POST');
-}
+
+exports.author_create_post = [
+    body("name")
+        .trim()
+        .isLength({ min: 1})
+        .withMessage('Name empty')
+        .isAlpha('en-US', {ignore: ' '})
+        .withMessage('Name must be alphabet letters')
+        .escape(),
+    body("date_of_birth")
+        .optional({ checkFalsy: true })
+        .isISO8601()
+        .toDate(),
+    body("date_of_death")
+        .optional({ checkFalsy: true })
+        .isISO8601()
+        .toDate(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+        const names = req.body.name.split(' ');
+        const first_name = names[0];
+        const family_name = names[names.length - 1];
+        const author = new Author({first_name: first_name, family_name: family_name, 
+            date_of_birth: req.body.date_of_birth, date_of_death: req.body.date_of_death});
+        if (!errors.isEmpty()) {
+            res.render("author_form", {
+                title: "Create Author",
+                author: req.body,
+                errors: errors.array(),
+            });
+            return;
+        } else {
+            // Data from form is valid.
+            // Check if author with same name already exists.
+            Author.findOne({first_name: first_name, family_name: family_name}).exec((err, found_author) => {
+                if (err) {
+                    return next(err);
+                }
+                if (found_author) {
+                    res.redirect(found_author.url);
+                } else {
+                    author.save((err) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        res.redirect(author.url);
+                    });
+                }
+            });
+        }
+    }
+];
   
 // Display Author delete form on GET.
 exports.author_delete_get = (req, res) => {
