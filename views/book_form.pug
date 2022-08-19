@@ -1,0 +1,30 @@
+extends layout 
+
+block content 
+    h1= title
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='title') Title: 
+            input#title.form-control(type='text',
+            placeholder='Name of the book', name='title',
+            required='true'
+            value=(undefined===book ? '': book.title))
+        
+        div.form-group
+            label(for='author') Author: 
+            select#author.form-control(type='select',
+            placeholder='Select the author', name='author',
+            required='true')
+                - authors.sort(function(a, b) {
+                    let textA = a.family_name.toUpperCase();
+                    let textB = b.family_name.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1: 0;});
+                each author in authors
+                    if book
+    //-
+        title: { type: String, required: true },
+        author: { type: Schema.Types.ObjectId, ref: 'Author', required: true },
+        summary: { type: String, required: true },
+        isbn: { type: String, required: true },
+        genre: [{ type: Schema.Types.ObjectId, ref: 'Genre' }]
