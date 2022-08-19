@@ -6,15 +6,16 @@ block content
         div.form-group
             label(for='name') Name: 
             input#name.form-control(type='text',
-            placeholder="Author's name", name='name',
+            placeholder="Author's full name", 
+            name='name', required='true',
             value=(undefined===author ? '': author.name))
 
             label(for='date_of_birth') Date of Birth: 
-            input#name.form-control(type='date', name='date_of_birth',
+            input#date_of_birth.form-control(type='date', name='date_of_birth',
             value=(undefined===author ? '': author.date_of_birth))
 
             label(for='date_of_death') Date of Birth: 
-            input#name.form-control(type='date', name='date_of_death',
+            input#date_of_death.form-control(type='date', name='date_of_death',
             value=(undefined===author ? '': author.date_of_birth))
 
 
