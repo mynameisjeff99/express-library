@@ -3,7 +3,6 @@ const Book = require('../models/book');
 
 const async = require('async');
 const {body, validationResult} = require('express-validator');
-const author = require('../models/author');
 
 // Display list of all Authors.
 exports.author_list = function(req, res, next) {
@@ -23,10 +22,26 @@ exports.author_detail = (req, res, next) => {
             Author.findById(req.params.id)
             .exec(callback);
         },
-        book(callback) {
-            Book.findBy
+        author_books(callback) {
+            Book.find({'author': req.params.id}, 'title summary url')
+            .exec(callback);
+        },
+    },
+    (err, results) => {
+        if (err) {
+            return next(err);
         }
-    })
+        if (results.author == null) {
+            const err = new Error("Author not found");
+            err.status = 404;
+            return next(err);
+        }
+        res.render("author_detail", {
+            title: results.author.name,
+            author: results.author,
+            author_books: results.author_books,
+        })
+    });
 }
 
 // Display Author create form on GET.
