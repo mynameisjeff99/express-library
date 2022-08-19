@@ -9,11 +9,13 @@ block content
             placeholder="Author's full name", 
             name='name', required='true',
             value=(undefined===author ? '': author.name))
-
+        
+        div.form-group
             label(for='date_of_birth') Date of Birth: 
             input#date_of_birth.form-control(type='date', name='date_of_birth',
             value=(undefined===author ? '': author.date_of_birth))
 
+        div.form-group
             label(for='date_of_death') Date of Birth: 
             input#date_of_death.form-control(type='date', name='date_of_death',
             value=(undefined===author ? '': author.date_of_birth))
