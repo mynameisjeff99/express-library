@@ -6,19 +6,19 @@ block content
         div.form-group
             label(for='name') Name: 
             input#name.form-control(type='text',
-            placeholder="Author's full name", 
+            placeholder="FirstName FamilyName", 
             name='name', required='true',
             value=(undefined===author ? '': author.name))
         
         div.form-group
             label(for='date_of_birth') Date of Birth: 
             input#date_of_birth.form-control(type='date', name='date_of_birth',
-            value=(undefined===author ? '': author.date_of_birth))
+            value=(undefined===author ? '': author.date_of_birth_ISO))
 
         div.form-group
             label(for='date_of_death') Date of Birth: 
             input#date_of_death.form-control(type='date', name='date_of_death',
-            value=(undefined===author ? '': author.date_of_birth))
+            value=(undefined===author ? '': author.date_of_death_ISO))
 
 
         button.btn.btn-primary(type='submit') Submit
